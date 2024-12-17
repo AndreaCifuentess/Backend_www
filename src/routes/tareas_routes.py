@@ -2,27 +2,32 @@ from fastapi import APIRouter, HTTPException
 from src.controllers.tarea_controller import TareaController
 from pydantic import BaseModel
 from datetime import datetime
+from typing import List
 
 router = APIRouter()
 
 class TareaIn(BaseModel):
-    id: int
-    titulo: str
-    descripcion: str | None = None
-    fecha_creacion: datetime
-    completado: bool
-
-class TareaOut(TareaIn):
     titulo: str
     descripcion: str 
+
+class TareaOut(TareaIn):
+    id: int
+    completado: bool
+    fecha_creacion: datetime
+
+    class Config:
+        orm_mode = True
+
 
 ##Crear tarea
 @router.post("/tareas", response_model=TareaOut)
 async def create_tarea(tarea: TareaIn):
     tarea_obj = await TareaController.create_tarea(tarea.titulo,tarea.descripcion)
-    return await TareaOut.from_tortoise_orm(tarea_obj)
+    return tarea_obj 
 
-@router.get("/tareas/{tarea_id}", response_model=TareaOut)
+
+
+@router.get("/tareas", response_model=TareaOut)
 async def read_tarea(tarea_id: int):
     tarea = await TareaController.read_tarea(tarea_id)
     if tarea is None:

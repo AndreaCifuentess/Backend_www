@@ -4,8 +4,12 @@ from datetime import datetime
 
 class TareaController:
     @staticmethod
-    async def create_tarea(titulo, descripcion):
-        tarea_obj = await Tarea.create(titulo= titulo, descripcion=descripcion)
+    async def create_tarea(titulo: str, descripcion: str):
+        # La fecha de creación y el estado de completado se gestionarán automáticamente
+        tarea_obj = await Tarea.create(
+            titulo=titulo,
+            descripcion=descripcion
+        )
         return tarea_obj
 
     @staticmethod
