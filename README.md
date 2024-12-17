@@ -1,6 +1,7 @@
-#Backend_www
+# Backend_www
 
 Aplicación del lado del servidor para la gestión de tareas, que permite crear, ver, borrar y editar las tareas.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 La aplicación esta desarrollada en fastApi, un framework para crear Apis con pyhton.
 
 Se instalaron dependencias como tprtoise-orm
