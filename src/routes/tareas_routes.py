@@ -31,7 +31,6 @@ async def read_all_tareas():
     tareas = await TareaController.read_all_tareas()  # Llamada al controlador
     if not tareas:
         raise HTTPException(status_code=404, detail="No se encontraron tareas")
-    
     # Conversión de cada tarea a TareaOut manualmente
     return [
         TareaOut(
@@ -45,7 +44,7 @@ async def read_all_tareas():
     ]
 
 ##Editar Tarea no sirve
-@router.put("/editar_tarea/{tarea_id}", response_model=TareaOut)
+@router.put("/editar_tarea/{task_id}", response_model=TareaOut)
 async def update_tarea(tarea_id: int, tarea: TareaIn):
     print("Datos recibidos:", tarea.model_dump())
     tarea_obj = await TareaController.update_tarea(tarea_id, tarea)
@@ -54,11 +53,10 @@ async def update_tarea(tarea_id: int, tarea: TareaIn):
     return tarea_obj
 
 
-
 ## Eliminar tarea
-@router.delete("/borrar_tarea/{tarea_id}")
-async def delete_tarea(tarea_id: int):
-    success = await TareaController.delete_tarea(tarea_id)
+@router.delete("/borrar_tarea/{task_id}")
+async def delete_tarea(task_id: int):
+    success = await TareaController.delete_tarea(task_id)
     if not success:
         raise HTTPException(status_code=404, detail="Tarea no encontrada")
     return {"detail": "Tarea eliminada"}
