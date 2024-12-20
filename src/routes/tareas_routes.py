@@ -25,23 +25,38 @@ async def create_tarea(tarea: TareaIn):
     tarea_obj = await TareaController.create_tarea(tarea.titulo,tarea.descripcion)
     return tarea_obj 
 
+##Obtener tareas
+@router.get("/obtener_tareas", response_model=List[TareaOut])
+async def read_all_tareas():
+    tareas = await TareaController.read_all_tareas()  # Llamada al controlador
+    if not tareas:
+        raise HTTPException(status_code=404, detail="No se encontraron tareas")
+    
+    # Conversión de cada tarea a TareaOut manualmente
+    return [
+        TareaOut(
+            id=tarea.id,
+            titulo=tarea.titulo,
+            descripcion=tarea.descripcion,
+            completado=tarea.completado,
+            fecha_creacion=tarea.fecha_creacion
+        )
+        for tarea in tareas
+    ]
 
-
-@router.get("/tareas", response_model=TareaOut)
-async def read_tarea(tarea_id: int):
-    tarea = await TareaController.read_tarea(tarea_id)
-    if tarea is None:
-        raise HTTPException(status_code=404, detail="Tarea no encontrada")
-    return await TareaOut.from_tortoise_orm(tarea)
-
-@router.put("/tareas/{tarea_id}", response_model=TareaOut)
+##Editar Tarea no sirve
+@router.put("/editar_tarea/{tarea_id}", response_model=TareaOut)
 async def update_tarea(tarea_id: int, tarea: TareaIn):
+    print("Datos recibidos:", tarea.model_dump())
     tarea_obj = await TareaController.update_tarea(tarea_id, tarea)
-    if tarea_obj is None:
+    if not tarea_obj:
         raise HTTPException(status_code=404, detail="Tarea no encontrada")
-    return await TareaOut.from_tortoise_orm(tarea_obj)
+    return tarea_obj
 
-@router.delete("/tareas/{tarea_id}")
+
+
+## Eliminar tarea
+@router.delete("/borrar_tarea/{tarea_id}")
 async def delete_tarea(tarea_id: int):
     success = await TareaController.delete_tarea(tarea_id)
     if not success:
